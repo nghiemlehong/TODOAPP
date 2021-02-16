@@ -2,6 +2,8 @@ import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divi
 import React from 'react'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder'
+import Favorite from '@material-ui/icons/Favorite'
 import './Todo.css'
 import { db } from './firebase'
 
@@ -10,7 +12,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 
-export function Todo({ id, text, date }) {
+export function Todo({ id, text, date, completed }) {
     const [open, setOpen] = React.useState(false);
     const [input, setInput] = React.useState('')
 
@@ -33,6 +35,12 @@ export function Todo({ id, text, date }) {
         setOpen(false)
     }
 
+    const updateCompleted = () => {
+        db.collection('todos').doc(id).set({
+            completed: !completed
+        }, { merge: true }
+        )
+    }
     const deleteTodo = evt => { db.collection('todos').doc(id).delete() }
 
     return (<>
@@ -64,7 +72,22 @@ export function Todo({ id, text, date }) {
                 <Avatar alt="Remy Sharp" >📝</Avatar>
             </ListItemAvatar>
             <ListItemText
-                primary={text}
+                primary={<React.Fragment>
+                    {completed ?
+                        <Typography
+                            style={{
+                                textDecorationLine: 'line-through'
+                            }}
+                            variant="h5"
+                        >
+                            {text}
+                        </Typography> :
+                        <Typography
+                            variant="h5"
+                        >
+                            {text}
+                        </Typography>}
+                </React.Fragment>}
                 secondary={
                     <React.Fragment>
                         <Typography
@@ -78,6 +101,9 @@ export function Todo({ id, text, date }) {
                     </React.Fragment>
                 }
             />
+            <IconButton onClick={updateCompleted} >
+                {completed ? <Favorite /> : <FavoriteBorder />} 
+            </IconButton>
             <IconButton onClick={handleOpen} >
                 <EditIcon />
             </IconButton>

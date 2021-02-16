@@ -26,7 +26,7 @@ function App() {
       todo: input,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       date: moment().format("MMM Do YY"),
-
+      completed : false,
     })
     setInput('')
   }
@@ -51,7 +51,7 @@ function App() {
       <div className="list-todo">
         {loading ? <LinearProgress /> : <List>
           {todos.map(x => (
-            <Todo text={x.todo.todo} date={x.todo.date} id={x.id} />
+            <Todo text={x.todo.todo} date={x.todo.date} id={x.id} completed = {x.todo.completed} />
           ))}
         </List>
         }
